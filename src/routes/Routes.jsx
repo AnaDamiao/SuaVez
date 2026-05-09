@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Cliente from "../pages/Cliente";
-import Atendente from "../pages/Atendente";
-import Painel from "../pages/Painel";
+import Cliente from "../pages/Cliente/Cliente";
+import Atendente from "../pages/Atendente/Atendente";
+import Painel from "../pages/Painel/Painel";
 import QRCodeFila from "../componentes/QRCodeFila";
-import IniciarFila from "../pages/IniciarFila";
+import IniciarFila from "../pages/IniciarFila/IniciarFila";
 
 export default function Router() {
 
