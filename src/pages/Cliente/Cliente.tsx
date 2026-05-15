@@ -22,7 +22,8 @@ export default function Cliente() {
     pegarSenha,
     handleCancelar,
     setConfirmando,
-    resetar
+    resetar,
+    tempoEstimado
   } = useCliente(codigo);
 
   if (!filaAtiva) return <TelaEncerrada />;
@@ -38,6 +39,7 @@ export default function Cliente() {
         senha={senha.numero}
         senhaAtual={senhaAtual}
         posicao={posicao}
+        tempoEstimado={tempoEstimado}
         confirmando={confirmando}
         onCancelar={handleCancelar}
         onVoltar={() => setConfirmando(false)}

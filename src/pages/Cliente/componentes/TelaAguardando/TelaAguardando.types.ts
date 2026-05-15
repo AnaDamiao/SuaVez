@@ -5,4 +5,5 @@ export interface ITelaAguardando {
   confirmando: boolean;
   onCancelar: () => void;
   onVoltar: () => void;
+  tempoEstimado?: number;
 }

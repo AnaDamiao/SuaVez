@@ -1,91 +1,219 @@
 .page {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #e8eaf0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  padding: 0 20px 40px;
+}
+
+.navbar {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+}
+
+.brand {
+  color: #2563eb;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: #0d0d0d;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  padding: 20px;
 }
 
 .card {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 24px;
-  padding: 52px 44px;
-  text-align: center;
-  max-width: 400px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 36px 36px 28px;
   width: 100%;
-  color: #fff;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+  max-width: 420px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
 }
 
-.icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+.tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2563eb;
+  margin: 0 0 12px;
 }
 
 .titulo {
-  font-size: 2rem;
+  font-size: 26px;
   font-weight: 800;
-  margin: 0 0 8px;
+  color: #111;
+  line-height: 1.2;
+  margin: 0 0 28px;
 }
 
-.sub {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 0.9rem;
-  margin: 0 0 36px;
-  line-height: 1.5;
+.titulo-accent {
+  color: #2563eb;
 }
 
 .inputGroup {
-  text-align: left;
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .label {
   display: block;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
   margin-bottom: 8px;
-  font-weight: 600;
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f3f4f6;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 14px;
+
+  &:focus-within {
+    border-color: #2563eb;
+  }
+}
+
+.inputIcon {
+  font-size: 16px;
+  color: #bbb;
 }
 
 .input {
-  width: 100%;
-  padding: 14px 16px;
-  font-size: 0.95rem;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 12px;
-  color: #fff;
+  border: none;
+  background: transparent;
   outline: none;
-  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
 
-  &:focus {
-    border-color: #667eea;
+  &::placeholder {
+    color: #aaa;
   }
+}
+
+.inputHint {
+  font-size: 12px;
+  color: #aaa;
+  margin: 8px 0 0;
 }
 
 .btn {
   width: 100%;
-  padding: 16px;
-  font-size: 1rem;
+  margin-top: 24px;
+  padding: 15px;
+  font-size: 15px;
   font-weight: 700;
-  border: none;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #2563eb;
   color: #fff;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
-  letter-spacing: 0.03em;
-  transition: 0.2s;
+  letter-spacing: 0.01em;
+  transition: background 0.2s;
 
   &:hover {
-    filter: brightness(1.1);
+    background: #1d4ed8;
   }
 
   &:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
   }
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 16px;
+
+  a {
+    font-size: 12px;
+    color: #888;
+    text-decoration: none;
+
+    &:hover { color: #2563eb; }
+  }
+}
+
+.features {
+  display: flex;
+  gap: 32px;
+  margin-top: 28px;
+  justify-content: center;
+}
+
+.feat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #bbb;
+  font-weight: 600;
+}
+
+.featIcon {
+  font-size: 22px;
+  opacity: 0.4;
+}
+
+.powered {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ccc;
+  margin-top: 24px;
 }

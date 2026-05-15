@@ -18,6 +18,7 @@ export function useCliente(codigo: string | undefined) {
     const [loading, setLoading] = useState(false);
     const [confirmando, setConfirmando] = useState(false);
     const [chamado, setChamado] = useState(false);
+    const [tempoEstimado, setTempoEstimado] = useState(0);
 
     const unsubPosicaoRef = useRef<Unsubscribe | null>(null);
     const unsubSenhaRef = useRef<Unsubscribe | null>(null);
@@ -30,6 +31,18 @@ export function useCliente(codigo: string | undefined) {
 
     setFilaAtiva(dados.ativa);
     setSenhaAtual(dados.senhaAtual || 0);
+
+    if (senha) {
+        const pessoasNaFrente = Math.max(
+            senha.numero - (dados.senhaAtual || 0) - 1,
+            0
+        );
+
+        setPosicao(pessoasNaFrente);
+
+        // 5 minutos por pessoa
+        setTempoEstimado(pessoasNaFrente * 5);
+    }
 
     if (senha && dados.senhaAtual === senha.numero) {
         setChamado(true);
@@ -105,6 +118,7 @@ export function useCliente(codigo: string | undefined) {
     loading,
     confirmando,
     chamado,
+    tempoEstimado,
 
     pegarSenha,
     handleCancelar,

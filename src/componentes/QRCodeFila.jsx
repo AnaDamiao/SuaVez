@@ -18,7 +18,7 @@ export default function QRCodeFila() {
         size={256}
       />
 
-      <p>{url}</p>
+      <a href={url} target="__blank">{"URL DE ACESSO"}</a>
 
     </div>
 

@@ -107,8 +107,41 @@ export async function chamarProximaSenha(filaId) {
     });
 
     if (proxima !== null) {
-      transaction.update(filaRef, { senhaAtual: proxima });
+      const agora = Date.now();
+
+      transaction.update(filaRef, {
+        senhaAtual: proxima,
+        ultimaChamadaEm: agora
+      });
+
+      const historicoRef = doc(
+        collection(db, "filas", filaId, "historico")
+      );
+
+      transaction.set(historicoRef, {
+        senha: proxima,
+        chamadaEm: agora
+      });
     }
+  });
+}
+
+export function escutarHistorico(filaId, callback) {
+  const historicoRef = collection(db, "filas", filaId, "historico");
+
+  const q = query(historicoRef, orderBy("chamadaEm", "desc"));
+
+  return onSnapshot(q, (snapshot) => {
+    const dados = [];
+
+    snapshot.forEach((doc) => {
+      dados.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    callback(dados);
   });
 }
 

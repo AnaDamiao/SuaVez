@@ -7,7 +7,8 @@ export default function TelaAguardando({
   posicao,
   confirmando,
   onCancelar,
-  onVoltar
+  onVoltar,
+  tempoEstimado
 } : ITelaAguardando) {
   return (
     <div className="page">
@@ -31,11 +32,21 @@ export default function TelaAguardando({
 
         <div className="status">
           {posicao === 0 ? (
-            <span className="proximo">⚡ Você é o próximo!</span>
+            <div className="status-content">
+              <span className="proximo">Você é o próximo!</span>
+              <small className="tempo">Atendimento iminente</small>
+            </div>
           ) : (
-            <span>
-              Aguarde — posição <strong>{posicao !== null ? posicao + 1 : "…"}</strong>
-            </span>
+            <div className="status-content">
+              <span>
+                Aguarde — posição{" "}
+                <strong>{posicao !== null ? posicao + 1 : "…"}</strong>
+              </span>
+
+              <small className="tempo">
+                ⏱ Tempo estimado: {tempoEstimado} min
+              </small>
+            </div>
           )}
         </div>
 
