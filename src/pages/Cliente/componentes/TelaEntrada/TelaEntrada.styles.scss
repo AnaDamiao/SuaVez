@@ -3,54 +3,59 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f0f0f, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, #f4f8ff 0%, #e8f0ff 100%);
   padding: 20px;
 }
 
 .card {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
   border-radius: 24px;
   padding: 40px;
   text-align: center;
   max-width: 380px;
   width: 100%;
-  color: #fff;
+  color: #0f172a;
+  border: 1px solid #dbe3f0;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
 }
 
 .titulo {
   font-size: 1.6rem;
   font-weight: 700;
+  color: #0f172a;
 }
 
 .sub {
-  color: rgba(255,255,255,0.6);
+  color: #64748b;
   margin: 10px 0 20px;
 }
 
 .senha {
   font-size: 5rem;
   font-weight: 900;
+  color: #2563eb;
 }
 
 .btn-primary {
   padding: 14px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   border: none;
   color: white;
   cursor: pointer;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
 }
 
 .btn-secondary {
-  border: 1px solid rgba(255,255,255,0.2);
-  background: transparent;
-  color: white;
+  border: 1px solid #dbe3f0;
+  color: #1e293b;
+  background: #fff;
   padding: 12px;
   border-radius: 12px;
 }
 
 .btn-danger {
-  background: #e74c3c;
+  background: #dc2626;
   color: white;
 }

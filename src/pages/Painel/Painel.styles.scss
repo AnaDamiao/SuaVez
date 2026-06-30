@@ -1,0 +1,424 @@
+// ============================================
+// PAINEL DE CHAMADA DE FILA - ESTILOS
+// ============================================
+
+// Variáveis de cor e design
+$cor-principal: #2563eb;
+$cor-secundaria: #0f172a;
+$cor-fundo: #f4f8ff;
+$cor-texto: #0f172a;
+$cor-texto-claro: #64748b;
+$cor-status-ativo: #16a34a;
+$cor-borda: #dbe3f0;
+
+$transicao-padrao: all 0.3s ease;
+$sombra-forte: 0 20px 45px rgba(15, 23, 42, 0.12);
+$sombra-leve: 0 10px 24px rgba(37, 99, 235, 0.12);
+
+// ============================================
+// CONTAINER PRINCIPAL
+// ============================================
+.painel-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+
+  &.carregando {
+    flex-direction: column;
+    gap: 20px;
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid $cor-fundo;
+      border-top: 4px solid $cor-principal;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    p {
+      font-size: 18px;
+      color: $cor-texto-claro;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// CONTEÚDO PRINCIPAL
+// ============================================
+.painel-content {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background: white;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ============================================
+// CABEÇALHO
+// ============================================
+.painel-header {
+  background: linear-gradient(135deg, $cor-secundaria 0%, #1e293b 100%);
+  color: white;
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid $cor-principal;
+  flex-shrink: 0;
+
+  .header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .label-pequeno {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      color: #ecf0f1;
+    }
+
+    .titulo-fila {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 10px 20px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      background: $cor-status-ativo;
+      border-radius: 50%;
+      animation: pulsar 2s ease-in-out infinite;
+    }
+
+    .status-texto {
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+    }
+  }
+}
+
+@keyframes pulsar {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+// ============================================
+// ÁREA DE SENHA (CENTRO)
+// ============================================
+.painel-senha-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
+  position: relative;
+
+  &.pulse {
+    animation: pulse-area 0.5s ease-out;
+  }
+}
+
+@keyframes pulse-area {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.senha-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+
+  .label-senha {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: $cor-texto-claro;
+    margin-bottom: 10px;
+  }
+
+  .numero-grande {
+    font-size: 180px;
+    font-weight: 900;
+    color: $cor-principal;
+    line-height: 1;
+    text-shadow: 0 4px 8px rgba(37, 99, 235, 0.16);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -5px;
+
+    @media (max-width: 768px) {
+      font-size: 120px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 80px;
+    }
+  }
+
+  .separador {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      $cor-principal 50%,
+      transparent 100%
+    );
+    margin: 10px 0;
+  }
+
+  .label-guiche {
+    font-size: 24px;
+    font-weight: 600;
+    color: $cor-secundaria;
+    letter-spacing: 0.5px;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+    }
+  }
+}
+
+// ============================================
+// RODAPÉ
+// ============================================
+.painel-footer {
+  background: $cor-fundo;
+  padding: 30px 60px;
+  border-top: 1px solid $cor-borda;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-shrink: 0;
+
+  .footer-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+
+    .footer-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: $cor-texto-claro;
+    }
+
+    .footer-valor {
+      font-size: 16px;
+      font-weight: 600;
+      color: $cor-texto;
+      font-family: "Courier New", monospace;
+
+      &.status-ativo {
+        color: $cor-status-ativo;
+      }
+    }
+  }
+
+  .footer-separator {
+    width: 1px;
+    height: 20px;
+    background: $cor-borda;
+  }
+}
+
+// ============================================
+// RESPONSIVIDADE
+// ============================================
+@media (max-width: 768px) {
+  .painel-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .painel-content {
+    width: 100%;
+    height: 100%;
+  }
+
+  .painel-header {
+    padding: 30px 25px;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+
+    .header-info {
+      width: 100%;
+
+      .titulo-fila {
+        font-size: 28px;
+      }
+    }
+
+    .status-badge {
+      align-self: flex-end;
+    }
+  }
+
+  .painel-senha-area {
+    padding: 40px 25px;
+  }
+
+  .senha-container {
+    .numero-grande {
+      font-size: 120px;
+    }
+
+    .label-guiche {
+      font-size: 18px;
+    }
+  }
+
+  .painel-footer {
+    padding: 20px 25px;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+}
+
+@media (max-width: 480px) {
+  .painel-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .painel-header {
+    padding: 20px 15px;
+
+    .header-info {
+      .titulo-fila {
+        font-size: 22px;
+      }
+
+      .label-pequeno {
+        font-size: 11px;
+      }
+    }
+
+    .status-badge {
+      padding: 8px 15px;
+      font-size: 12px;
+    }
+  }
+
+  .painel-senha-area {
+    padding: 30px 15px;
+  }
+
+  .senha-container {
+    gap: 15px;
+
+    .label-senha {
+      font-size: 14px;
+    }
+
+    .numero-grande {
+      font-size: 80px;
+    }
+
+    .label-guiche {
+      font-size: 16px;
+    }
+  }
+
+  .painel-footer {
+    padding: 15px 10px;
+    gap: 15px;
+    flex-direction: column;
+    font-size: 13px;
+
+    .footer-separator {
+      display: none;
+    }
+
+    .footer-item {
+      gap: 8px;
+
+      .footer-label {
+        font-size: 11px;
+      }
+
+      .footer-valor {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// ============================================
+// EFEITOS E ANIMAÇÕES ADICIONAIS
+// ============================================
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px rgba(26, 188, 156, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(26, 188, 156, 0.3);
+  }
+}
+
+// Aplicar glow quando há animação
+.painel-senha-area.pulse .numero-grande {
+  animation: glow 0.5s ease-out;
+}

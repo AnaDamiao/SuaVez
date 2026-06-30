@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #e8eaf0;
+  background: linear-gradient(135deg, #f4f8ff 0%, #e8f0ff 100%);
   font-family: "Segoe UI", system-ui, sans-serif;
   padding: 0 20px 40px;
 }
@@ -30,13 +30,13 @@
 
 .icon-btn {
   background: none;
-  border: 1px solid #ddd;
+  border: 1px solid #dbe3f0;
   border-radius: 50%;
   width: 34px;
   height: 34px;
   cursor: pointer;
   font-size: 14px;
-  color: #555;
+  color: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,7 +48,8 @@
   padding: 36px 36px 28px;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  border: 1px solid #dbe3f0;
 }
 
 .tag {
@@ -63,7 +64,7 @@
 .titulo {
   font-size: 26px;
   font-weight: 800;
-  color: #111;
+  color: #0f172a;
   line-height: 1.2;
   margin: 0 0 28px;
 }
@@ -82,7 +83,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #888;
+  color: #64748b;
   margin-bottom: 8px;
 }
 
@@ -90,8 +91,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #f3f4f6;
-  border: 1.5px solid #e5e7eb;
+  background: #f8fafc;
+  border: 1.5px solid #dbe3f0;
   border-radius: 12px;
   padding: 12px 14px;
 
@@ -102,7 +103,7 @@
 
 .inputIcon {
   font-size: 16px;
-  color: #bbb;
+  color: #94a3b8;
 }
 
 .input {
@@ -110,17 +111,17 @@
   background: transparent;
   outline: none;
   font-size: 14px;
-  color: #333;
+  color: #334155;
   width: 100%;
 
   &::placeholder {
-    color: #aaa;
+    color: #94a3b8;
   }
 }
 
 .inputHint {
   font-size: 12px;
-  color: #aaa;
+  color: #64748b;
   margin: 8px 0 0;
 }
 
@@ -130,7 +131,7 @@
   padding: 15px;
   font-size: 15px;
   font-weight: 700;
-  background: #2563eb;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -154,7 +155,7 @@
   justify-content: space-between;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #e2e8f0;
 }
 
 .status {
@@ -162,7 +163,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #555;
+  color: #475569;
 }
 
 .statusDot {
@@ -179,7 +180,7 @@
 
   a {
     font-size: 12px;
-    color: #888;
+    color: #64748b;
     text-decoration: none;
 
     &:hover { color: #2563eb; }
@@ -201,7 +202,7 @@
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #bbb;
+  color: #94a3b8;
   font-weight: 600;
 }
 
@@ -214,6 +215,6 @@
   font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #ccc;
+  color: #cbd5e1;
   margin-top: 24px;
 }

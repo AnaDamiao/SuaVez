@@ -54,16 +54,16 @@ export default function TelaAguardando({
           <div className="confirm">
             <p>Tem certeza que deseja cancelar?</p>
             <div className="actions">
-              <button className="btn-danger" onClick={onCancelar}>
+              <button className="btn-yes" onClick={onCancelar}>
                 Sim
               </button>
-              <button className="btn-secondary" onClick={onVoltar}>
+              <button className="btn-back" onClick={onVoltar}>
                 Voltar
               </button>
             </div>
           </div>
         ) : (
-          <button className="btn-secondary" onClick={onCancelar}>
+          <button className="btn-cancel" onClick={onCancelar}>
             Cancelar senha
           </button>
         )}
