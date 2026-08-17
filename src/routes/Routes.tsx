@@ -29,6 +29,11 @@ export default function Router() {
         />
 
         <Route
+          path="/painel"
+          element={<Painel />}
+        />
+
+        <Route
           path="/painel/:filaId"
           element={<Painel />}
         />

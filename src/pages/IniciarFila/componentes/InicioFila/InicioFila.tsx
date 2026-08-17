@@ -1,10 +1,20 @@
 import "./IniciarFila.styles.scss";
+import type { Dispatch, SetStateAction } from "react";
+
+interface FilaAtiva {
+  id: string;
+  nome?: string;
+  senhaAtual?: number;
+  ultimaSenhaGerada?: number;
+}
 
 interface InicioFilaProps {
   nomeFila: string;
-  setNomeFila: React.Dispatch<React.SetStateAction<string>>;
+  setNomeFila: Dispatch<SetStateAction<string>>;
   loading: boolean;
   onSubmit: () => void;
+  filasAtivas: FilaAtiva[];
+  onAbrirFila: (filaId: string) => void;
 }
 
 export function InicioFila({
@@ -12,21 +22,20 @@ export function InicioFila({
   setNomeFila,
   loading,
   onSubmit,
+  filasAtivas,
+  onAbrirFila,
 }: InicioFilaProps) {
   return (
     <div className="page">
       <header className="navbar">
         <span className="brand">Fila Digital</span>
-        <div className="nav-icons">
-          <button className="icon-btn" aria-label="Ajuda">?</button>
-          <button className="icon-btn" aria-label="Usuário">👤</button>
-        </div>
+       
       </header>
 
       <div className="card">
         <p className="tag">Terminal de Atendimento</p>
         <h1 className="titulo">
-          Defina o fluxo de <span className="titulo-accent">atendimento</span>
+          Defina o fluxo de atendimento
         </h1>
 
         <div className="inputGroup">
@@ -59,6 +68,40 @@ export function InicioFila({
           </div>
         </div>
       </div>
+
+      <section className="activeQueues">
+        <div className="activeQueuesHeader">
+          <div>
+            <p className="tag tagSecondary">Filas abertas</p>
+            <h2 className="activeQueuesTitle">Acesse uma fila ativa</h2>
+          </div>
+          <span className="activeQueuesCount">
+            {filasAtivas.length} ativa{filasAtivas.length === 1 ? "" : "s"}
+          </span>
+        </div>
+
+        {filasAtivas.length === 0 ? (
+          <div className="emptyState">
+            Nenhuma fila está aberta no momento.
+          </div>
+        ) : (
+          <div className="queueList">
+            {filasAtivas.map((fila) => (
+              <button
+                key={fila.id}
+                className="queueCard"
+                onClick={() => onAbrirFila(fila.id)}
+              >
+                <div>
+                  <p className="queueName">{fila.nome || "Fila sem nome"}</p>
+                  <p className="queueMeta">ID: {fila.id}</p>
+                </div>
+                <span className="queueAction">Abrir atendimento →</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
 
       </div>
   );

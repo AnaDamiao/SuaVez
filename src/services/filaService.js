@@ -9,7 +9,7 @@ import {
   query,
   orderBy,
   onSnapshot,
-  // where
+  where
 } from "firebase/firestore";
 
 export async function criarFila(nome) {
@@ -80,8 +80,42 @@ export function escutarSenha(filaId, senhaDocId, callback) {
 
 export function escutarFila(filaId, callback) {
   const filaRef = doc(db, "filas", filaId);
-  return onSnapshot(filaRef, (doc) => {
-    callback(doc.data());
+  return onSnapshot(filaRef, (snap) => {
+    const dados = snap.data();
+    callback(dados ? { ...dados, id: filaId } : null);
+  });
+}
+
+export function escutarFilaAtiva(callback) {
+  const unsub = escutarFilasAtivas((filas) => {
+    callback(filas[0] || null);
+  });
+
+  return unsub;
+}
+
+export function escutarFilasAtivas(callback) {
+  const filasRef = collection(db, "filas");
+  const q = query(filasRef, where("ativa", "==", true));
+
+  return onSnapshot(q, (snapshot) => {
+    const filas = [];
+
+    snapshot.forEach((doc) => {
+      filas.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    filas.sort((a, b) => {
+      const criadaEmA = a.criadaEm?.toMillis ? a.criadaEm.toMillis() : 0;
+      const criadaEmB = b.criadaEm?.toMillis ? b.criadaEm.toMillis() : 0;
+
+      return criadaEmB - criadaEmA;
+    });
+
+    callback(filas);
   });
 }
 

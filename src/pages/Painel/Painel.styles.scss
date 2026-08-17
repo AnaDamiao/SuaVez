@@ -9,6 +9,7 @@ $cor-fundo: #f4f8ff;
 $cor-texto: #0f172a;
 $cor-texto-claro: #64748b;
 $cor-status-ativo: #16a34a;
+$cor-status-inativo: #c2410c;
 $cor-borda: #dbe3f0;
 
 $transicao-padrao: all 0.3s ease;
@@ -132,6 +133,15 @@ $sombra-leve: 0 10px 24px rgba(37, 99, 235, 0.12);
       font-weight: 600;
       color: white;
     }
+
+    &.status-inativo {
+      background: rgba(194, 65, 12, 0.18);
+
+      .status-dot {
+        background: $cor-status-inativo;
+        animation: none;
+      }
+    }
   }
 }
 
@@ -161,6 +171,24 @@ $sombra-leve: 0 10px 24px rgba(37, 99, 235, 0.12);
 
   &.pulse {
     animation: pulse-area 0.5s ease-out;
+  }
+
+  &.inativo {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+
+    .numero-grande,
+    .label-guiche {
+      color: $cor-status-inativo;
+    }
+
+    .separador {
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        $cor-status-inativo 50%,
+        transparent 100%
+      );
+    }
   }
 }
 
@@ -268,6 +296,10 @@ $sombra-leve: 0 10px 24px rgba(37, 99, 235, 0.12);
 
       &.status-ativo {
         color: $cor-status-ativo;
+      }
+
+      &.status-inativo {
+        color: $cor-status-inativo;
       }
     }
   }
@@ -421,4 +453,10 @@ $sombra-leve: 0 10px 24px rgba(37, 99, 235, 0.12);
 // Aplicar glow quando há animação
 .painel-senha-area.pulse .numero-grande {
   animation: glow 0.5s ease-out;
+}
+
+.painel-container.painel-inativo {
+  .painel-content {
+    background: #fffaf4;
+  }
 }

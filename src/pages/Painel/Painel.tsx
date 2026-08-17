@@ -1,34 +1,48 @@
 import { useEffect, useState } from "react";
-import { escutarFila } from "../../services/filaService";
+import { escutarFila, escutarFilaAtiva } from "../../services/filaService";
 import { useParams } from "react-router-dom";
 import "../Painel/Painel.styles.scss";
 
 interface Fila {
+  id: string;
   senhaAtual: number;
   ativa?: boolean;
+  nome?: string;
 }
 
 export default function Painel() {
-  const { filaId } = useParams<{ filaId: string }>();
+  const { filaId } = useParams<{ filaId?: string }>();
 
   const [fila, setFila] = useState<Fila | null>(null);
   const [animacao, setAnimacao] = useState(false);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    if (!filaId) return;
+    setCarregando(true);
+    setFila(null);
 
-    const unsub = escutarFila(filaId, (dados: Fila | null) => {
+    const atualizarFila = (dados: Fila | null) => {
       if (dados) {
         setAnimacao(true);
         setTimeout(() => setAnimacao(false), 500);
-        setFila(dados);
       }
-    });
+
+      setFila(dados);
+      setCarregando(false);
+    };
+
+    const unsub = filaId
+      ? escutarFila(filaId, (dados: Fila | null) => {
+          atualizarFila(dados ? { ...dados, id: filaId } : null);
+        })
+      : escutarFilaAtiva((dados: Fila | null) => {
+          atualizarFila(dados);
+        });
 
     return () => unsub();
   }, [filaId]);
 
-  if (!fila) {
+  if (carregando) {
     return (
       <div className="painel-container carregando">
         <div className="spinner"></div>
@@ -37,38 +51,47 @@ export default function Painel() {
     );
   }
 
+  const filaAtiva = Boolean(fila && fila.ativa !== false);
+  const numeroSenha = filaAtiva ? fila?.senhaAtual ?? "00" : "----";
+  const titulo = filaAtiva ? "Chamada de Senha" : "Fila Inativa";
+  const statusTexto = filaAtiva ? "Ativo" : "Inativo";
+  const footerStatus = filaAtiva ? "Chamando" : "Nenhuma fila aberta";
+  const labelGuiche = filaAtiva ? "Dirija-se ao Guichê" : "Aguardando abertura de fila";
+  const badgeClass = filaAtiva ? "status-ativo" : "status-inativo";
+  const filaIdExibida = fila?.id || filaId || "-";
+
   return (
-    <div className="painel-container">
+    <div className={`painel-container ${filaAtiva ? "" : "painel-inativo"}`}>
       <div className="painel-content">
         <div className="painel-header">
           <div className="header-info">
             <span className="label-pequeno">Fila de Atendimento</span>
-            <h2 className="titulo-fila">Chamada de Senha</h2>
+            <h2 className="titulo-fila">{titulo}</h2>
           </div>
-          <div className="status-badge">
+          <div className={`status-badge ${badgeClass}`}>
             <span className="status-dot"></span>
-            <span className="status-texto">Ativo</span>
+            <span className="status-texto">{statusTexto}</span>
           </div>
         </div>
 
-        <div className={`painel-senha-area ${animacao ? "pulse" : ""}`}>
+        <div className={`painel-senha-area ${filaAtiva ? "" : "inativo"} ${animacao ? "pulse" : ""}`}>
           <div className="senha-container">
-            <span className="label-senha">SENHA ATUAL</span>
-            <div className="numero-grande">{fila.senhaAtual}</div>
+            <span className="label-senha">{filaAtiva ? "SENHA ATUAL" : "SINAL INATIVO"}</span>
+            <div className="numero-grande">{numeroSenha}</div>
             <div className="separador"></div>
-            <span className="label-guiche">Dirija-se ao Guichê</span>
+            <span className="label-guiche">{labelGuiche}</span>
           </div>
         </div>
 
         <div className="painel-footer">
           <div className="footer-item">
             <span className="footer-label">Status:</span>
-            <span className="footer-valor status-ativo">Chamando</span>
+            <span className={`footer-valor ${badgeClass}`}>{footerStatus}</span>
           </div>
           <div className="footer-separator"></div>
           <div className="footer-item">
             <span className="footer-label">Fila ID:</span>
-            <span className="footer-valor">{filaId}</span>
+            <span className="footer-valor">{filaIdExibida}</span>
           </div>
         </div>
       </div>
