@@ -1,0 +1,291 @@
+.totem-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f4f8ff 0%, #e8f0ff 100%);
+  height: 100%;
+  padding: 32px 20px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #0f172a;
+}
+
+.totem-panel {
+  padding: 36px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #dbe3f0;
+  border-radius: 24px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+}
+
+.totem-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 34px;
+}
+
+.totem-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 12px;
+  border-color: #1d4ed8;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.totem-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.totem-kicker,
+.totem-step {
+  margin: 0 0 7px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.totem-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+}
+
+.totem-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(26px, 5vw, 68px);
+}
+
+.totem-qr-section,
+.totem-print-section {
+  text-align: center;
+}
+
+.totem-qr-frame {
+  display: inline-block;
+  padding: 14px;
+  margin-bottom: 22px;
+  background: #fff;
+  border: 1px solid #dbe3f0;
+  border-radius: 18px;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.12);
+}
+
+.totem-content h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  line-height: 1.2;
+}
+
+.totem-copy {
+  max-width: 350px;
+  margin: 10px auto 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.totem-divider {
+  width: 1px;
+  height: 220px;
+  position: relative;
+  background: #dbe3f0;
+}
+
+.totem-divider span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 7px;
+  color: #94a3b8;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.totem-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(100%, 360px);
+  min-height: 58px;
+  margin-top: 26px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.totem-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.totem-button:active {
+  transform: translateY(0);
+}
+
+.totem-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.totem-button-icon {
+  font-size: 1.25em;
+}
+
+.totem-feedback {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.totem-feedback-error,
+.totem-error {
+  color: #dc2626;
+}
+
+.ticket-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.ticket {
+  width: min(360px, 100%);
+  padding: 36px 28px;
+  border: 1px solid #dbe3f0;
+  border-radius: 24px;
+  text-align: center;
+  background: #fff;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.16);
+}
+
+.ticket-label {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.ticket h2 {
+  margin: 10px 0 12px;
+  color: #2563eb;
+  font-size: clamp(5rem, 15vw, 7rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.ticket p {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.ticket span {
+  display: block;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.ticket-close {
+  min-height: 48px;
+  margin-top: 24px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .totem-panel {
+    padding: 28px 20px;
+  }
+
+  .totem-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .totem-divider {
+    width: 70%;
+    height: 1px;
+    margin: 0 auto;
+  }
+
+  .totem-qr-frame canvas {
+    width: min(65vw, 280px);
+    height: auto;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .totem-page {
+    display: block;
+    min-height: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .totem-panel {
+    display: none;
+  }
+
+  .ticket-overlay {
+    position: static;
+    display: block;
+    background: #fff;
+  }
+
+  .ticket {
+    width: 72mm;
+    padding: 8mm 4mm;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .ticket h2 {
+    font-size: 42pt;
+  }
+
+  .ticket-close {
+    display: none;
+  }
+}

@@ -38,8 +38,13 @@ export default function Router() {
           element={<Painel />}
         />
 
-        <Route
+        {/* <Route
           path="/qr/:filaId"
+          element={<QRCodeFila />}
+        /> */}
+
+        <Route
+          path="/totem/:filaId"
           element={<QRCodeFila />}
         />
 
