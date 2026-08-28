@@ -18,7 +18,7 @@ export default function QRCodeFila() {
   useEffect(() => {
     if (!filaId) return;
 
-    return escutarFila(filaId, (fila) => {
+    return escutarFila(filaId, (fila : { nome: string; ativa: boolean }) => {
       if (!fila) {
         setErro("Esta fila não foi encontrada.");
         setFilaAtiva(false);

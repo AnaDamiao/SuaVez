@@ -142,7 +142,7 @@ export default function Atendente() {
     return null;
   }
 
-  const qrUrl = `${window.location.origin}/qr/${filaId}`;
+  const qrUrl = `${window.location.origin}/totem/${filaId}`;
   const painelUrl = `${window.location.origin}/painel`;
   const aguardando = Math.max(0, (fila?.ultimaSenhaGerada ?? 0) - (fila?.senhaAtual ?? 0));
   const filaAtiva = fila?.ativa !== false;
