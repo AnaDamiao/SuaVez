@@ -15,6 +15,7 @@ interface InicioFilaProps {
   onSubmit: () => void;
   filasAtivas: FilaAtiva[];
   onAbrirFila: (filaId: string) => void;
+  onLogout: () => void;
 }
 
 export function InicioFila({
@@ -24,6 +25,7 @@ export function InicioFila({
   onSubmit,
   filasAtivas,
   onAbrirFila,
+  onLogout,
 }: InicioFilaProps) {
   return (
     <div className="page">
@@ -64,7 +66,7 @@ export function InicioFila({
           </div>
           <div className="footerLinks">
             <a href="#">Configurações</a>
-            <a href="#">Sair</a>
+            <button type="button" className="link-button" onClick={onLogout}>Sair</button>
           </div>
         </div>
       </div>

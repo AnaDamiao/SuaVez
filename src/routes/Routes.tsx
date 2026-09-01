@@ -5,6 +5,9 @@ import Atendente from "../pages/Atendente/Atendente";
 import Painel from "../pages/Painel/Painel";
 import QRCodeFila from "../componentes/QRCodeFila";
 import IniciarFila from "../pages/IniciarFila/IniciarFila";
+import Login from "../pages/Auth/Login";
+import Cadastro from "../pages/Auth/Cadastro";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function Router() {
 
@@ -14,8 +17,13 @@ export default function Router() {
 
       <Routes>
         <Route
-            path="/"
-            element={<IniciarFila />}
+          path="/"
+          element={<ProtectedRoute><IniciarFila /></ProtectedRoute>}
+        />
+
+        <Route
+          path="/iniciar-fila"
+          element={<ProtectedRoute><IniciarFila /></ProtectedRoute>}
         />
 
         <Route
@@ -25,17 +33,17 @@ export default function Router() {
 
         <Route
           path="/admin/:filaId"
-          element={<Atendente />}
+          element={<ProtectedRoute><Atendente /></ProtectedRoute>}
         />
 
         <Route
           path="/painel"
-          element={<Painel />}
+          element={<ProtectedRoute><Painel /></ProtectedRoute>}
         />
 
         <Route
           path="/painel/:filaId"
-          element={<Painel />}
+          element={<ProtectedRoute><Painel /></ProtectedRoute>}
         />
 
         {/* <Route
@@ -48,10 +56,17 @@ export default function Router() {
           element={<QRCodeFila />}
         />
 
+        <Route 
+          path="/login" 
+          element={<Login />} 
+        />
+        
+        <Route 
+          path="/cadastro" 
+          element={<Cadastro />}
+        />
       </Routes>
 
     </BrowserRouter>
-
   );
-
 }

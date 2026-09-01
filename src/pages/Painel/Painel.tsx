@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { escutarFila, escutarFilaAtiva } from "../../services/filaService";
+import { escutarFilaAdministrativa, escutarFilaAtiva } from "../../services/filaService";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../firebase/AuthContext";
 import "../Painel/Painel.styles.scss";
 
 interface Fila {
@@ -12,6 +14,8 @@ interface Fila {
 
 export default function Painel() {
   const { filaId } = useParams<{ filaId?: string }>();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [fila, setFila] = useState<Fila | null>(null);
   const [animacao, setAnimacao] = useState(false);
@@ -32,7 +36,7 @@ export default function Painel() {
     };
 
     const unsub = filaId
-      ? escutarFila(filaId, (dados: Fila | null) => {
+      ? escutarFilaAdministrativa(filaId, (dados: Fila | null) => {
           atualizarFila(dados ? { ...dados, id: filaId } : null);
         })
       : escutarFilaAtiva((dados: Fila | null) => {
@@ -41,6 +45,11 @@ export default function Painel() {
 
     return () => unsub();
   }, [filaId]);
+
+  async function sair() {
+    await logout();
+    navigate("/login", { replace: true });
+  }
 
   if (carregando) {
     return (
@@ -68,9 +77,15 @@ export default function Painel() {
             <span className="label-pequeno">Fila de Atendimento</span>
             <h2 className="titulo-fila">{titulo}</h2>
           </div>
-          <div className={`status-badge ${badgeClass}`}>
-            <span className="status-dot"></span>
-            <span className="status-texto">{statusTexto}</span>
+          <div className="painel-header-acoes">
+            <div className={`status-badge ${badgeClass}`}>
+              <span className="status-dot"></span>
+              <span className="status-texto">{statusTexto}</span>
+            </div>
+            <button className="painel-logout" onClick={sair}>
+              Sair
+              <img className="icon-out" src="/logout.svg" alt="Sua Vez" />
+            </button>
           </div>
         </div>
 

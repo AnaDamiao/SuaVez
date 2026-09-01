@@ -2,10 +2,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
   chamarProximaSenha,
-  escutarFila,
+  escutarFilaAdministrativa,
   escutarHistorico,
   finalizarFila,
 } from "../../services/filaService";
+import { useAuth } from "../../firebase/AuthContext";
 import "./atendente.styles.scss";
 
 interface Fila {
@@ -28,6 +29,7 @@ function cx(...classes: Array<string | false | undefined>) {
 export default function Atendente() {
   const { filaId } = useParams<{ filaId?: string }>();
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [fila, setFila] = useState<Fila | null>(null);
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,7 @@ export default function Atendente() {
       return;
     }
 
-    const unsub = escutarFila(filaId, (dados: Fila | null) => {
+    const unsub = escutarFilaAdministrativa(filaId, (dados: Fila | null) => {
       setFila(dados ?? null);
     });
 
@@ -115,6 +117,11 @@ export default function Atendente() {
     navigate("/");
   }
 
+  async function sair() {
+    await logout();
+    navigate("/login", { replace: true });
+  }
+
   function formatarTempo(segundos: number) {
     const min = Math.floor(segundos / 60);
     const seg = segundos % 60;
@@ -154,6 +161,7 @@ export default function Atendente() {
             <img src="/logo_sua_vez.png"  alt="Sua Vez" />
         </div>
         <span className="atendente-brand">Fila Digital</span>
+        <button className="atendente-logout" onClick={sair}>Sair</button>
       </div>
 
       <div className="atendente-body">

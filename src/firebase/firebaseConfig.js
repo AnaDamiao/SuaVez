@@ -1,18 +1,24 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDH9Dt9prmyvhddagBo3q9X2RGS7Zs8sxs",
-  authDomain: "fila-digital-tcc.firebaseapp.com",
-  databaseURL: "https://fila-digital-tcc-default-rtdb.firebaseio.com",
-  projectId: "fila-digital-tcc",
-  storageBucket: "fila-digital-tcc.firebasestorage.app",
-  messagingSenderId: "97615531958",
-  appId: "1:97615531958:web:d4ba4fa9ea2d9ad9b2fb17",
-  measurementId: "G-F2YDS4D3D0"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+const requiredConfig = ["apiKey", "authDomain", "projectId", "appId"];
+if (requiredConfig.some((key) => !firebaseConfig[key])) {
+  throw new Error("Config do Firebase ausente. Confira o arquivo .env.local.");
+}
 
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
+export const auth = getAuth(app);

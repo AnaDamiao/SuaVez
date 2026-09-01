@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   gerarSenha,
   cancelarSenha,
@@ -7,7 +7,7 @@ import {
   escutarSenha
 } from "../../services/filaService";
 
-import { FilaDados, Senha, SenhaDados, Unsubscribe } from "./Clientes.types";
+import { FilaDados, Senha, SenhaDados } from "./Clientes.types";
 
 export function useCliente(codigo: string | undefined) {
     const [senha, setSenha] = useState<Senha | null>(null);
@@ -20,109 +20,125 @@ export function useCliente(codigo: string | undefined) {
     const [chamado, setChamado] = useState(false);
     const [tempoEstimado, setTempoEstimado] = useState(0);
 
-    const unsubPosicaoRef = useRef<Unsubscribe | null>(null);
-    const unsubSenhaRef = useRef<Unsubscribe | null>(null);
+    const chaveSenha = codigo ? `fila-digital:senha:${codigo}` : null;
 
     useEffect(() => {
-    if (!codigo) return;
+        setSenha(null);
+        setCancelada(false);
+        setChamado(false);
+        setPosicao(null);
+        setTempoEstimado(0);
 
-    const unsub = escutarFila(codigo, (dados: FilaDados | null) => {
-    if (!dados) return;
+        if (!chaveSenha) return;
 
-    setFilaAtiva(dados.ativa);
-    setSenhaAtual(dados.senhaAtual || 0);
+        try {
+            const armazenada = localStorage.getItem(chaveSenha);
+            if (!armazenada) return;
 
-    if (senha) {
-        const pessoasNaFrente = Math.max(
-            senha.numero - (dados.senhaAtual || 0) - 1,
-            0
-        );
+            const senhaRestaurada: unknown = JSON.parse(armazenada);
+            if (
+            typeof senhaRestaurada === "object" && senhaRestaurada !== null
+            && typeof (senhaRestaurada as Senha).numero === "number"
+            && typeof (senhaRestaurada as Senha).senhaDocId === "string"
+            ) {
+            setSenha(senhaRestaurada as Senha);
+            }
+        } catch {
+            localStorage.removeItem(chaveSenha);
+        }
+    }, [chaveSenha]);
 
-        setPosicao(pessoasNaFrente);
+    useEffect(() => {
+        if (!codigo) return;
 
-        // 5 minutos por pessoa
-        setTempoEstimado(pessoasNaFrente * 5);
-    }
+        const unsub = escutarFila(codigo, (dados: FilaDados | null) => {
+            if (!dados) return;
 
-    if (senha && dados.senhaAtual === senha.numero) {
-        setChamado(true);
-    }
-    });
+            setFilaAtiva(dados.ativa);
+            setSenhaAtual(dados.senhaAtual || 0);
 
-    return () => unsub();
+            if (senha) {
+                const pessoasNaFrente = Math.max(
+                    senha.numero - (dados.senhaAtual || 0) - 1,
+                    0
+                );
+
+                setPosicao(pessoasNaFrente);
+
+                // 5 minutos por pessoa
+                setTempoEstimado(pessoasNaFrente * 5);
+            }
+
+            if (senha && dados.senhaAtual === senha.numero) {
+                setChamado(true);
+            }
+        });
+
+        return () => unsub();
     }, [codigo, senha]);
 
     useEffect(() => {
+        if (!codigo || !senha) return;
+
+        const unsubPosicao = escutarPosicaoNaFila(codigo, senha.numero, setPosicao);
+        const unsubSenha = escutarSenha(codigo, senha.senhaDocId, (dados: SenhaDados | null) => {
+            if (dados?.cancelada) setCancelada(true);
+        });
+
     return () => {
-        unsubPosicaoRef.current?.();
-        unsubSenhaRef.current?.();
+        unsubPosicao();
+        unsubSenha();
     };
-    }, []);
+    }, [codigo, senha]);
 
     async function pegarSenha() {
-    if (!codigo) return;
+        if (!codigo) return;
 
-    setLoading(true);
-    try {
-        const resultado = await gerarSenha(codigo);
-        setSenha(resultado);
-
-        unsubPosicaoRef.current = escutarPosicaoNaFila(
-        codigo,
-        resultado.numero,
-        setPosicao
-        );
-
-        unsubSenhaRef.current = escutarSenha(
-        codigo,
-        resultado.senhaDocId,
-        (dados: SenhaDados | null) => {
-            if (dados?.cancelada) setCancelada(true);
+        setLoading(true);
+        try {
+            const resultado = await gerarSenha(codigo);
+            if (chaveSenha) localStorage.setItem(chaveSenha, JSON.stringify(resultado));
+            setSenha(resultado);
+        } finally {
+            setLoading(false);
         }
-        );
-    } finally {
-        setLoading(false);
-    }
     }
 
     async function handleCancelar() {
-    if (!senha || !codigo) return;
+        if (!senha || !codigo) return;
 
-    if (!confirmando) {
-        setConfirmando(true);
-        return;
-    }
+        if (!confirmando) {
+            setConfirmando(true);
+            return;
+        }
 
-    await cancelarSenha(codigo, senha.senhaDocId);
+        await cancelarSenha(codigo, senha.senhaDocId);
 
-    setCancelada(true);
-    setConfirmando(false);
-
-    unsubPosicaoRef.current?.();
-    unsubSenhaRef.current?.();
+        setCancelada(true);
+        setConfirmando(false);
     }
 
     function resetar() {
-    setSenha(null);
-    setCancelada(false);
-    setPosicao(null);
-    setChamado(false);
+        if (chaveSenha) localStorage.removeItem(chaveSenha);
+        setSenha(null);
+        setCancelada(false);
+        setPosicao(null);
+        setChamado(false);
     }
 
     return {
-    senha,
-    senhaAtual,
-    posicao,
-    cancelada,
-    filaAtiva,
-    loading,
-    confirmando,
-    chamado,
-    tempoEstimado,
-
-    pegarSenha,
-    handleCancelar,
-    setConfirmando,
-    resetar
+        senha,
+        senhaAtual,
+        posicao,
+        cancelada,
+        filaAtiva,
+        loading,
+        confirmando,
+        chamado,
+        tempoEstimado,
+        pegarSenha,
+        handleCancelar,
+        setConfirmando,
+        resetar
     };
 }

@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function isStaff() {
+      return isSignedIn()
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'atendente';
+    }
+    function isOwner() { return isStaff() && resource.data.criadoPor == request.auth.uid; }
+    function isFilaOwner(filaId) {
+      return isStaff()
+        && get(/databases/$(database)/documents/filas/$(filaId)).data.criadoPor == request.auth.uid;
+    }
+
+    match /usuarios/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['nome', 'email', 'role', 'criadoEm'])
+        && request.resource.data.role == 'atendente';
+      allow update: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome']);
+      allow delete: if false;
+    }
+
+    match /filas/{filaId} {
+      // A tela publica consulta uma fila pelo ID, mas nao lista todas.
+      allow get: if true;
+      allow list: if isStaff() && resource.data.criadoPor == request.auth.uid;
+      allow create: if isStaff() && request.resource.data.criadoPor == request.auth.uid;
+      allow delete: if isOwner();
+      allow update: if isOwner()
+        || (isSignedIn() && resource.data.ativa == true
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ultimaSenhaGerada'])
+            && request.resource.data.ultimaSenhaGerada == resource.data.ultimaSenhaGerada + 1);
+
+      match /historico/{historicoId} {
+        allow read, write: if isFilaOwner(filaId);
+      }
+
+      match /senhas/{senhaId} {
+        // O cliente publico le somente a senha que ele mesmo retirou.
+        allow get: if isFilaOwner(filaId)
+          || (isSignedIn() && resource.data.criadaPor == request.auth.uid);
+        allow list: if isFilaOwner(filaId);
+        allow create: if isSignedIn()
+          && get(/databases/$(database)/documents/filas/$(filaId)).data.ativa == true
+          && request.resource.data.keys().hasOnly(['numero', 'cancelada', 'criadaEm', 'criadaPor'])
+          && request.resource.data.numero is int && request.resource.data.numero > 0
+          && request.resource.data.cancelada == false
+          && request.resource.data.criadaPor == request.auth.uid;
+        allow update: if isFilaOwner(filaId)
+          || (isSignedIn() && resource.data.criadaPor == request.auth.uid
+              && resource.data.cancelada == false
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cancelada'])
+              && request.resource.data.cancelada == true);
+        allow delete: if false;
+      }
+    }
+  }
+}

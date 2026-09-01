@@ -1,4 +1,5 @@
-import { db } from "../firebase/firebaseConfig";
+import { auth, db } from "../firebase/firebaseConfig";
+import { signInAnonymously } from "firebase/auth";
 import {
   addDoc,
   doc,
@@ -12,18 +13,29 @@ import {
   where
 } from "firebase/firestore";
 
+async function obterUsuarioPublico() {
+  if (auth.currentUser) return auth.currentUser;
+  const credencial = await signInAnonymously(auth);
+  return credencial.user;
+}
+
 export async function criarFila(nome) {
+  const criadoPor = auth.currentUser?.uid;
+  if (!criadoPor) throw new Error("Usuário não autenticado.");
+
   const filaRef = await addDoc(collection(db, "filas"), {
     nome: nome,
     senhaAtual: 0,
     ultimaSenhaGerada: 0,
     ativa: true,
-    criadaEm: new Date()
+    criadaEm: new Date(),
+    criadoPor
   });
   return filaRef.id;
 }
 
 export async function gerarSenha(filaId) {
+  const usuario = await obterUsuarioPublico();
   const filaRef = doc(db, "filas", filaId);
 
   const resultado = await runTransaction(db, async (transaction) => {
@@ -37,7 +49,8 @@ export async function gerarSenha(filaId) {
     transaction.set(senhaRef, {
       numero: proxima,
       cancelada: false,
-      criadaEm: new Date()
+      criadaEm: new Date(),
+      criadaPor: usuario.uid
     });
 
     transaction.update(filaRef, {
@@ -51,6 +64,7 @@ export async function gerarSenha(filaId) {
 }
 
 export async function cancelarSenha(filaId, senhaDocId) {
+  await obterUsuarioPublico();
   const senhaRef = doc(db, "filas", filaId, "senhas", senhaDocId);
   await updateDoc(senhaRef, { cancelada: true });
 }
@@ -87,7 +101,7 @@ export function escutarFila(filaId, callback) {
 }
 
 export function escutarFilaAtiva(callback) {
-  const unsub = escutarFilasAtivas((filas) => {
+  const unsub = escutarFilasDoAdmin((filas) => {
     callback(filas[0] || null);
   });
 
@@ -185,17 +199,37 @@ export async function finalizarFila(filaId) {
 }
 
 export function escutarPosicaoNaFila(filaId, meuNumero, callback) {
-  const senhasRef = collection(db, "filas", filaId, "senhas");
-  const q = query(senhasRef, orderBy("numero"));
+  return escutarFila(filaId, (fila) => {
+    callback(Math.max(meuNumero - (fila?.senhaAtual || 0) - 1, 0));
+  });
+}
+
+export function escutarFilasDoAdmin(callback) {
+  const uid = auth.currentUser?.uid;
+  if (!uid) {
+    callback([]);
+    return () => {};
+  }
+
+  const filasRef = collection(db, "filas");
+  const q = query(filasRef, where("ativa", "==", true), where("criadoPor", "==", uid));
 
   return onSnapshot(q, (snapshot) => {
-    let posicao = 0;
-    snapshot.forEach((doc) => {
-      const s = doc.data();
-      if (!s.cancelada && s.numero < meuNumero) {
-        posicao++;
-      }
-    });
-    callback(posicao);
+    const filas = snapshot.docs.map((filaDoc) => ({ id: filaDoc.id, ...filaDoc.data() }));
+    filas.sort((a, b) => (b.criadaEm?.toMillis?.() ?? 0) - (a.criadaEm?.toMillis?.() ?? 0));
+    callback(filas);
+  });
+}
+
+export function escutarFilaAdministrativa(filaId, callback) {
+  const uid = auth.currentUser?.uid;
+  if (!uid) {
+    callback(null);
+    return () => {};
+  }
+
+  return onSnapshot(doc(db, "filas", filaId), (snap) => {
+    const dados = snap.data();
+    callback(dados?.criadoPor === uid ? { ...dados, id: filaId } : null);
   });
 }
