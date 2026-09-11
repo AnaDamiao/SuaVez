@@ -57,6 +57,17 @@ export function useCliente(codigo: string | undefined) {
             setFilaAtiva(dados.ativa);
             setSenhaAtual(dados.senhaAtual || 0);
 
+            if (senha && dados.senhaAtual > senha.numero) {
+                if (chaveSenha) localStorage.removeItem(chaveSenha);
+                setSenha(null);
+                setCancelada(false);
+                setChamado(false);
+                setConfirmando(false);
+                setPosicao(null);
+                setTempoEstimado(0);
+                return;
+            }
+
             if (senha) {
                 const pessoasNaFrente = Math.max(
                     senha.numero - (dados.senhaAtual || 0) - 1,
@@ -69,13 +80,11 @@ export function useCliente(codigo: string | undefined) {
                 setTempoEstimado(pessoasNaFrente * 5);
             }
 
-            if (senha && dados.senhaAtual === senha.numero) {
-                setChamado(true);
-            }
+            setChamado(Boolean(senha && dados.senhaAtual === senha.numero));
         });
 
         return () => unsub();
-    }, [codigo, senha]);
+    }, [codigo, chaveSenha, senha]);
 
     useEffect(() => {
         if (!codigo || !senha) return;
