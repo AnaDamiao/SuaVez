@@ -1,11 +1,6 @@
 import "./TelaEncerrada.styles.scss";
 
-interface ITelaEncerrada {
-  posicao?: number | null;
-}
-
-export default function TelaEncerrada({ posicao }: ITelaEncerrada) {
-  const pessoasAFrente = posicao !== null && posicao !== undefined ? posicao : null;
+export default function TelaEncerrada() {
 
   return (
     <div className="page">

@@ -26,7 +26,7 @@ export default function Cliente() {
     tempoEstimado
   } = useCliente(codigo);
 
-  if (!filaAtiva) return <TelaEncerrada posicao={posicao} />;
+  if (!filaAtiva) return <TelaEncerrada/>;
 
   if (cancelada) return <TelaCancelada onReset={resetar} />;
 
