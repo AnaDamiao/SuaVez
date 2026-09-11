@@ -39,6 +39,17 @@ service cloud.firestore {
         allow read, write: if isFilaOwner(filaId);
       }
 
+      match /cancelamentos/{senhaId} {
+        allow read: if true;
+        allow create, update: if isSignedIn()
+          && request.resource.data.keys().hasOnly(['numero'])
+          && getAfter(/databases/$(database)/documents/filas/$(filaId)/senhas/$(senhaId)).data.cancelada == true
+          && request.resource.data.numero == getAfter(/databases/$(database)/documents/filas/$(filaId)/senhas/$(senhaId)).data.numero
+          && (isFilaOwner(filaId)
+            || getAfter(/databases/$(database)/documents/filas/$(filaId)/senhas/$(senhaId)).data.criadaPor == request.auth.uid);
+        allow delete: if false;
+      }
+
       match /senhas/{senhaId} {
         // O cliente publico le somente a senha que ele mesmo retirou.
         allow get: if isFilaOwner(filaId)

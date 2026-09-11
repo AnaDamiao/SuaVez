@@ -14,6 +14,7 @@ interface Fila {
   senhaAtual?: number;
   ultimaSenhaGerada?: number;
   ultimaChamadaEm?: number;
+  aguardando?: number;
 }
 
 interface HistoricoItem {
@@ -54,7 +55,7 @@ export default function Atendente() {
   useEffect(() => {
     if (!filaId) return;
 
-    const aguardando = Math.max(0, (fila?.ultimaSenhaGerada ?? 0) - (fila?.senhaAtual ?? 0));
+    const aguardando = fila?.aguardando ?? 0;
 
     if (aguardando <= 0) {
       setTempoRestante(0);
@@ -151,7 +152,7 @@ export default function Atendente() {
 
   const qrUrl = `${window.location.origin}/totem/${filaId}`;
   const painelUrl = `${window.location.origin}/painel`;
-  const aguardando = Math.max(0, (fila?.ultimaSenhaGerada ?? 0) - (fila?.senhaAtual ?? 0));
+  const aguardando = fila?.aguardando ?? 0;
   const filaAtiva = fila?.ativa !== false;
 
   return (

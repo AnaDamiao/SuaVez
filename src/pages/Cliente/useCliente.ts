@@ -89,7 +89,10 @@ export function useCliente(codigo: string | undefined) {
     useEffect(() => {
         if (!codigo || !senha) return;
 
-        const unsubPosicao = escutarPosicaoNaFila(codigo, senha.numero, setPosicao);
+        const unsubPosicao = escutarPosicaoNaFila(codigo, senha.numero, (pessoasNaFrente: number) => {
+            setPosicao(pessoasNaFrente);
+            setTempoEstimado(pessoasNaFrente * 5);
+        });
         const unsubSenha = escutarSenha(codigo, senha.senhaDocId, (dados: SenhaDados | null) => {
             if (dados?.cancelada) setCancelada(true);
         });

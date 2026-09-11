@@ -6,6 +6,7 @@ import {
   collection,
   runTransaction,
   updateDoc,
+  setDoc,
   getDocs,
   query,
   orderBy,
@@ -66,7 +67,13 @@ export async function gerarSenha(filaId) {
 export async function cancelarSenha(filaId, senhaDocId) {
   await obterUsuarioPublico();
   const senhaRef = doc(db, "filas", filaId, "senhas", senhaDocId);
-  await updateDoc(senhaRef, { cancelada: true });
+  const cancelamentoRef = doc(db, "filas", filaId, "cancelamentos", senhaDocId);
+  await runTransaction(db, async (transaction) => {
+    const senha = await transaction.get(senhaRef);
+    if (!senha.exists()) throw new Error("Senha não encontrada.");
+    transaction.update(senhaRef, { cancelada: true });
+    transaction.set(cancelamentoRef, { numero: senha.data().numero });
+  });
 }
 
 export async function getPosicaoNaFila(filaId, meuNumero) {
@@ -199,9 +206,28 @@ export async function finalizarFila(filaId) {
 }
 
 export function escutarPosicaoNaFila(filaId, meuNumero, callback) {
-  return escutarFila(filaId, (fila) => {
-    callback(Math.max(meuNumero - (fila?.senhaAtual || 0) - 1, 0));
+  let fila;
+  let cancelamentos;
+  const atualizar = () => {
+    if (fila === undefined || cancelamentos === undefined) return;
+    const atual = fila?.senhaAtual || 0;
+    const canceladasNaFrente = cancelamentos.filter(
+      (numero) => numero > atual && numero < meuNumero
+    ).length;
+    callback(Math.max(meuNumero - atual - 1 - canceladasNaFrente, 0));
+  };
+  const unsubFila = escutarFila(filaId, (dados) => {
+    fila = dados;
+    atualizar();
   });
+  const unsubCancelamentos = onSnapshot(collection(db, "filas", filaId, "cancelamentos"), (snapshot) => {
+    cancelamentos = [...new Set(snapshot.docs.map((item) => item.data().numero))];
+    atualizar();
+  });
+  return () => {
+    unsubFila();
+    unsubCancelamentos();
+  };
 }
 
 export function escutarFilasDoAdmin(callback) {
@@ -228,8 +254,35 @@ export function escutarFilaAdministrativa(filaId, callback) {
     return () => {};
   }
 
-  return onSnapshot(doc(db, "filas", filaId), (snap) => {
+  let fila;
+  let senhas;
+  const atualizar = () => {
+    if (fila === undefined) return;
+    callback(fila ? {
+      ...fila,
+      aguardando: (senhas || []).filter((senha) =>
+        !senha.cancelada && senha.numero > (fila.senhaAtual || 0)
+      ).length
+    } : null);
+  };
+  const unsubFila = onSnapshot(doc(db, "filas", filaId), (snap) => {
     const dados = snap.data();
-    callback(dados?.criadoPor === uid ? { ...dados, id: filaId } : null);
+    fila = dados?.criadoPor === uid ? { ...dados, id: filaId } : null;
+    atualizar();
   });
+  const unsubSenhas = onSnapshot(collection(db, "filas", filaId, "senhas"), (snapshot) => {
+    senhas = snapshot.docs.map((item) => item.data());
+    atualizar();
+
+    snapshot.docChanges().forEach(({ doc: senhaDoc, type }) => {
+      if (type === "removed" || !senhaDoc.data().cancelada) return;
+      setDoc(doc(db, "filas", filaId, "cancelamentos", senhaDoc.id), {
+        numero: senhaDoc.data().numero
+      }).catch((error) => console.error("Erro ao sincronizar cancelamento:", error));
+    });
+  });
+  return () => {
+    unsubFila();
+    unsubSenhas();
+  };
 }
