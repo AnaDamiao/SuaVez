@@ -59,3 +59,25 @@
   background: #dc2626;
   color: white;
 }
+.entrada-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #94a3b8;
+    border-radius: 12px;
+    background: white;
+    color: #0f172a;
+    font-size: 16px;
+  }
+  input:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+  button:disabled { opacity: 0.65; cursor: wait; }
+}
+.entrada-ajuda { font-size: 0.875rem; color: #475569; margin: 0; }
+.entrada-erro { color: #b91c1c; margin: 0; }

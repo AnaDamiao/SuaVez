@@ -1,4 +1,5 @@
 export interface ITelaEntrada {
-  onPegarSenha: () => void;
+  onPegarSenha: (telefone: string) => Promise<void>;
   loading: boolean;
+  erro: string;
 }

@@ -17,6 +17,7 @@ export default function Cliente() {
     cancelada,
     filaAtiva,
     loading,
+    erro,
     confirmando,
     chamado,
     pegarSenha,
@@ -46,5 +47,5 @@ export default function Cliente() {
       />
     );
 
-  return <TelaEntrada onPegarSenha={pegarSenha} loading={loading} />;
+  return <TelaEntrada onPegarSenha={pegarSenha} loading={loading} erro={erro} />;
 }

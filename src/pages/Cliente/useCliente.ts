@@ -16,6 +16,7 @@ export function useCliente(codigo: string | undefined) {
     const [cancelada, setCancelada] = useState(false);
     const [filaAtiva, setFilaAtiva] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [erro, setErro] = useState("");
     const [confirmando, setConfirmando] = useState(false);
     const [chamado, setChamado] = useState(false);
     const [tempoEstimado, setTempoEstimado] = useState(0);
@@ -103,14 +104,21 @@ export function useCliente(codigo: string | undefined) {
     };
     }, [codigo, senha]);
 
-    async function pegarSenha() {
-        if (!codigo) return;
+    async function pegarSenha(telefone: string) {
+        if (!codigo || loading) return;
 
         setLoading(true);
+        setErro("");
         try {
-            const resultado = await gerarSenha(codigo);
-            if (chaveSenha) localStorage.setItem(chaveSenha, JSON.stringify(resultado));
+            const resultado = await gerarSenha(codigo, telefone);
             setSenha(resultado);
+            if (chaveSenha) {
+                try { localStorage.setItem(chaveSenha, JSON.stringify(resultado)); }
+                catch { /* A senha continua disponível se o armazenamento estiver bloqueado. */ }
+            }
+        } catch (error) {
+            setErro(error instanceof Error && !('code' in error)
+                ? error.message : "Não foi possível retirar sua senha. Tente novamente.");
         } finally {
             setLoading(false);
         }
@@ -145,6 +153,7 @@ export function useCliente(codigo: string | undefined) {
         cancelada,
         filaAtiva,
         loading,
+        erro,
         confirmando,
         chamado,
         tempoEstimado,

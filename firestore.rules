@@ -57,7 +57,11 @@ service cloud.firestore {
         allow list: if isFilaOwner(filaId);
         allow create: if isSignedIn()
           && get(/databases/$(database)/documents/filas/$(filaId)).data.ativa == true
-          && request.resource.data.keys().hasOnly(['numero', 'cancelada', 'criadaEm', 'criadaPor'])
+          && request.resource.data.keys().hasOnly(['numero', 'cancelada', 'criadaEm', 'criadaPor', 'telefone', 'aceitaSms'])
+          && ((!request.resource.data.keys().hasAny(['telefone', 'aceitaSms']))
+            || (request.resource.data.telefone is string
+              && request.resource.data.telefone.matches('^[+]55[1-9]{2}9[0-9]{8}$')
+              && request.resource.data.aceitaSms == true))
           && request.resource.data.numero is int && request.resource.data.numero > 0
           && request.resource.data.cancelada == false
           && request.resource.data.criadaPor == request.auth.uid;

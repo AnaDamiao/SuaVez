@@ -1,5 +1,6 @@
 import { auth, db } from "../firebase/firebaseConfig";
 import { signInAnonymously } from "firebase/auth";
+import { normalizarCelular } from "./telefone";
 import {
   addDoc,
   doc,
@@ -35,13 +36,15 @@ export async function criarFila(nome) {
   return filaRef.id;
 }
 
-export async function gerarSenha(filaId) {
+export async function gerarSenha(filaId, telefone = "") {
+  const celular = normalizarCelular(telefone);
   const usuario = await obterUsuarioPublico();
   const filaRef = doc(db, "filas", filaId);
 
   const resultado = await runTransaction(db, async (transaction) => {
     const filaDoc = await transaction.get(filaRef);
     const dados = filaDoc.data();
+    if (!dados?.ativa) throw new Error("Esta fila está encerrada.");
     const ultimo = dados.ultimaSenhaGerada || 0;
     const proxima = ultimo + 1;
 
@@ -51,7 +54,8 @@ export async function gerarSenha(filaId) {
       numero: proxima,
       cancelada: false,
       criadaEm: new Date(),
-      criadaPor: usuario.uid
+      criadaPor: usuario.uid,
+      ...(celular ? { telefone: celular, aceitaSms: true } : {})
     });
 
     transaction.update(filaRef, {
