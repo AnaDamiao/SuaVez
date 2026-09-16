@@ -6,6 +6,7 @@ import TelaAguardando from "./componentes/TelaAguardando/TelaAguardando";
 import TelaChamado from "./componentes/TelaChamado/TelaChamado";
 import TelaCancelada from "./componentes/TelaCancelada/TelaCancelada";
 import TelaEncerrada from "./componentes/TelaEncerrada/TelaEncerrada";
+import LembreteFila from "./componentes/LembreteFila/LembreteFila";
 
 export default function Cliente() {
   const { codigo } = useParams();
@@ -35,6 +36,7 @@ export default function Cliente() {
 
   if (senha)
     return (
+      <>
       <TelaAguardando
         senha={senha.numero}
         senhaAtual={senhaAtual}
@@ -44,6 +46,14 @@ export default function Cliente() {
         onCancelar={handleCancelar}
         onVoltar={() => setConfirmando(false)}
       />
+      <LembreteFila
+        key={`${codigo}:${senha.senhaDocId}`}
+        identificador={`${codigo}:${senha.senhaDocId}`}
+        senha={senha.numero}
+        confirmando={confirmando}
+        onSair={handleCancelar}
+      />
+      </>
     );
 
   return <TelaEntrada onPegarSenha={pegarSenha} loading={loading} />;

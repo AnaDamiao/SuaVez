@@ -158,9 +158,11 @@ export default function Atendente() {
   return (
     <div className="atendente-page">
       <div className="atendente-navbar">
-        <div className="totem-mark-header" aria-hidden="true">
-            <img src="/logo_sua_vez.png"  alt="Sua Vez" />
-        </div>
+        <a href="/">
+          <div className="totem-mark-header" aria-hidden="true">
+              <img src="/logo_sua_vez.png"  alt="Sua Vez" />
+          </div>
+        </a>
         <span className="atendente-brand">Fila Digital</span>
         <button className="atendente-logout" onClick={sair}>Sair</button>
       </div>

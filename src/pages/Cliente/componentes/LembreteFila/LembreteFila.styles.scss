@@ -1,0 +1,31 @@
+.lembrete-fila {
+  box-sizing: border-box;
+  width: min(420px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 28px;
+  border: 1px solid #dbe3f0;
+  border-radius: 24px;
+  background: #fff;
+  color: #0f172a;
+  text-align: center;
+  box-shadow: 0 20px 45px rgb(15 23 42 / 20%);
+
+  &::backdrop { background: rgb(15 23 42 / 55%); }
+  h2 { margin: 0 0 16px; font-size: 1.5rem; }
+  p { color: #475569; line-height: 1.6; }
+
+  .lembrete-fila-acoes { display: grid; gap: 12px; margin-top: 24px; }
+  button {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px;
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    &:focus-visible { outline: 3px solid #0f172a; outline-offset: 3px; }
+  }
+  .lembrete-fila-continuar { background: #2563eb; color: #fff; border: 1px solid #2563eb; }
+  .lembrete-fila-sair { background: #fff; color: #b91c1c; border: 1px solid #b91c1c; }
+}
