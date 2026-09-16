@@ -1,3 +1,5 @@
+import type { EstimativaEspera } from "../../estimativaEspera";
+
 export interface ITelaAguardando {
   senha: number;
   senhaAtual: number;
@@ -5,5 +7,5 @@ export interface ITelaAguardando {
   confirmando: boolean;
   onCancelar: () => void;
   onVoltar: () => void;
-  tempoEstimado?: number;
+  tempoEstimado: EstimativaEspera | null;
 }

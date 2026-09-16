@@ -6,6 +6,8 @@ export interface Senha {
 export interface FilaDados {
   ativa: boolean;
   senhaAtual: number;
+  ultimaChamadaEm?: number;
+  intervalosChamadasMs?: number[];
 }
 
 export interface SenhaDados {

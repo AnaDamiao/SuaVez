@@ -153,20 +153,30 @@ export async function chamarProximaSenha(filaId) {
     const snapshot = await getDocs(q);
 
     let proxima = null;
+    let proximaCriadaEm = 0;
 
     snapshot.forEach((doc) => {
       const senha = doc.data();
       if (senha.numero > senhaAtual && senha.cancelada !== true && proxima === null) {
         proxima = senha.numero;
+        proximaCriadaEm = senha.criadaEm?.toMillis?.() || 0;
       }
     });
 
     if (proxima !== null) {
       const agora = Date.now();
+      const intervalos = (dados.intervalosChamadasMs || [])
+        .filter((valor) => Number.isFinite(valor) && valor > 0).slice(-20);
+      // Evita incluir o período em que não havia ninguém esperando.
+      const inicio = Math.max(dados.ultimaChamadaEm || 0, proximaCriadaEm);
+      if (dados.ultimaChamadaEm && agora > inicio) {
+        intervalos.push(agora - inicio);
+      }
 
       transaction.update(filaRef, {
         senhaAtual: proxima,
-        ultimaChamadaEm: agora
+        ultimaChamadaEm: agora,
+        intervalosChamadasMs: intervalos.slice(-20)
       });
 
       const historicoRef = doc(

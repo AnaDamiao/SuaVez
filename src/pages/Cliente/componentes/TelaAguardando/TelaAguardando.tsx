@@ -34,19 +34,41 @@ export default function TelaAguardando({
           {posicao === 0 ? (
             <div className="status-content">
               <span className="proximo">Você é o próximo!</span>
-              <small className="tempo">Atendimento iminente</small>
             </div>
           ) : (
             <div className="status-content">
               <span>
-                Aguarde — posição{" "}
+                Aguarde. Sua posição atual é: {" "}
                 <strong>{posicao !== null ? posicao + 1 : "…"}</strong>
               </span>
-
-              <small className="tempo">
-                ⏱ Tempo estimado: {tempoEstimado} min
-              </small>
             </div>
+          )}
+        </div>
+
+        <div className="estimativa-espera">
+          <span className="estimativa-titulo">Tempo aproximado até sua chamada</span>
+          {tempoEstimado ? (
+            <>
+              <strong className="estimativa-contador">
+                {tempoEstimado.segundos > 0
+                  ? [Math.floor(tempoEstimado.segundos / 60), tempoEstimado.segundos % 60].map(valor => String(valor).padStart(2, "0")).join(":")
+                  : "Aguardando chamada"}
+              </strong>
+              <span className="tempo">
+                Entre {tempoEstimado.minimoMinutos} e {tempoEstimado.maximoMinutos} min
+              </span>
+              <small className="tempo">
+                {tempoEstimado.amostras === 1
+                  ? "Estimativa inicial baseada no último intervalo entre chamadas."
+                  : "Baseado nos últimos intervalos entre chamadas."}
+                {" "}Pode variar conforme os atendimentos.
+              </small>
+              {tempoEstimado.atrasada && (
+                <small className="tempo">Sua espera ultrapassou a estimativa. O tempo será recalculado na próxima chamada.</small>
+              )}
+            </>
+          ) : (
+            <small className="tempo">Calculando estimativa. Aguardando os primeiros intervalos entre chamadas.</small>
           )}
         </div>
 

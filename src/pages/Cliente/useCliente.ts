@@ -7,6 +7,8 @@ import {
   escutarSenha
 } from "../../services/filaService";
 
+import { calcularEstimativa } from "./estimativaEspera";
+
 import { FilaDados, Senha, SenhaDados } from "./Clientes.types";
 
 export function useCliente(codigo: string | undefined) {
@@ -18,7 +20,19 @@ export function useCliente(codigo: string | undefined) {
     const [loading, setLoading] = useState(false);
     const [confirmando, setConfirmando] = useState(false);
     const [chamado, setChamado] = useState(false);
-    const [tempoEstimado, setTempoEstimado] = useState(0);
+    const [dadosEspera, setDadosEspera] = useState<FilaDados | null>(null);
+    const [agora, setAgora] = useState(Date.now);
+    const tempoEstimado = calcularEstimativa(
+        dadosEspera?.intervalosChamadasMs ?? [], posicao,
+        dadosEspera?.ultimaChamadaEm ?? 0, agora,
+    );
+
+    useEffect(() => {
+        if (!senha || cancelada || chamado || !filaAtiva) return;
+        setAgora(Date.now());
+        const timer = window.setInterval(() => setAgora(Date.now()), 1000);
+        return () => window.clearInterval(timer);
+    }, [senha, cancelada, chamado, filaAtiva]);
 
     const chaveSenha = codigo ? `fila-digital:senha:${codigo}` : null;
 
@@ -27,7 +41,7 @@ export function useCliente(codigo: string | undefined) {
         setCancelada(false);
         setChamado(false);
         setPosicao(null);
-        setTempoEstimado(0);
+        setDadosEspera(null);
 
         if (!chaveSenha) return;
 
@@ -54,6 +68,8 @@ export function useCliente(codigo: string | undefined) {
         const unsub = escutarFila(codigo, (dados: FilaDados | null) => {
             if (!dados) return;
 
+            setDadosEspera(dados);
+            setAgora(Date.now());
             setFilaAtiva(dados.ativa);
             setSenhaAtual(dados.senhaAtual || 0);
 
@@ -64,20 +80,8 @@ export function useCliente(codigo: string | undefined) {
                 setChamado(false);
                 setConfirmando(false);
                 setPosicao(null);
-                setTempoEstimado(0);
+                setDadosEspera(null);
                 return;
-            }
-
-            if (senha) {
-                const pessoasNaFrente = Math.max(
-                    senha.numero - (dados.senhaAtual || 0) - 1,
-                    0
-                );
-
-                setPosicao(pessoasNaFrente);
-
-                // 5 minutos por pessoa
-                setTempoEstimado(pessoasNaFrente * 5);
             }
 
             setChamado(Boolean(senha && dados.senhaAtual === senha.numero));
@@ -91,7 +95,6 @@ export function useCliente(codigo: string | undefined) {
 
         const unsubPosicao = escutarPosicaoNaFila(codigo, senha.numero, (pessoasNaFrente: number) => {
             setPosicao(pessoasNaFrente);
-            setTempoEstimado(pessoasNaFrente * 5);
         });
         const unsubSenha = escutarSenha(codigo, senha.senhaDocId, (dados: SenhaDados | null) => {
             if (dados?.cancelada) setCancelada(true);

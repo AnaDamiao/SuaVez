@@ -13,7 +13,6 @@ interface Fila {
   ativa?: boolean;
   senhaAtual?: number;
   ultimaSenhaGerada?: number;
-  ultimaChamadaEm?: number;
   aguardando?: number;
 }
 
@@ -36,7 +35,6 @@ export default function Atendente() {
   const [loading, setLoading] = useState(false);
   const [confirmFinalizar, setConfirmFinalizar] = useState(false);
   const [animando, setAnimando] = useState(false);
-  const [tempoRestante, setTempoRestante] = useState(0);
   const [historico, setHistorico] = useState<HistoricoItem[]>([]);
 
   useEffect(() => {
@@ -51,36 +49,6 @@ export default function Atendente() {
 
     return () => unsub();
   }, [filaId]);
-
-  useEffect(() => {
-    if (!filaId) return;
-
-    const aguardando = fila?.aguardando ?? 0;
-
-    if (aguardando <= 0) {
-      setTempoRestante(0);
-      return;
-    }
-
-    const ultimaChamada = fila?.ultimaChamadaEm ?? 0;
-
-    if (ultimaChamada === 0) {
-      setTempoRestante(300);
-      return;
-    }
-
-    const atualizarTempo = () => {
-      const agora = Date.now();
-      const segundosPassados = Math.floor((agora - ultimaChamada) / 1000);
-      const restante = Math.max(300 - segundosPassados, 0);
-      setTempoRestante(restante);
-    };
-
-    atualizarTempo();
-    const interval = setInterval(atualizarTempo, 1000);
-
-    return () => clearInterval(interval);
-  }, [fila, filaId]);
 
   useEffect(() => {
     if (!filaId) {
@@ -121,12 +89,6 @@ export default function Atendente() {
   async function sair() {
     await logout();
     navigate("/login", { replace: true });
-  }
-
-  function formatarTempo(segundos: number) {
-    const min = Math.floor(segundos / 60);
-    const seg = segundos % 60;
-    return `${String(min).padStart(2, "0")}:${String(seg).padStart(2, "0")}`;
   }
 
   function tempoRelativo(timestamp?: number) {
@@ -240,10 +202,6 @@ export default function Atendente() {
           <div className="atendente-card-beige">
             <p className="atendente-card-beige-label">EM ESPERA</p>
             <p className="atendente-card-beige-num">{aguardando}</p>
-            <p className="atendente-card-beige-sub">Tempo médio de espera</p>
-            <p className="atendente-card-beige-time">
-              {tempoRestante === 0 ? "Sem espera" : formatarTempo(tempoRestante)}
-            </p>
           </div>
 
           <a href={painelUrl} target="_blank" rel="noreferrer" className="atendente-link-card">
