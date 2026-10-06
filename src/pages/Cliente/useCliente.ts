@@ -14,6 +14,7 @@ import { FilaDados, Senha, SenhaDados } from "./Clientes.types";
 export function useCliente(codigo: string | undefined) {
     const [senha, setSenha] = useState<Senha | null>(null);
     const [senhaAtual, setSenhaAtual] = useState(0);
+    const [nomeFila, setNomeFila] = useState("");
     const [posicao, setPosicao] = useState<number | null>(null);
     const [cancelada, setCancelada] = useState(false);
     const [filaAtiva, setFilaAtiva] = useState(true);
@@ -69,6 +70,7 @@ export function useCliente(codigo: string | undefined) {
             if (!dados) return;
 
             setDadosEspera(dados);
+            setNomeFila(dados.nome || "Fila Digital");
             setAgora(Date.now());
             setFilaAtiva(dados.ativa);
             setSenhaAtual(dados.senhaAtual || 0);
@@ -144,6 +146,7 @@ export function useCliente(codigo: string | undefined) {
     return {
         senha,
         senhaAtual,
+        nomeFila,
         posicao,
         cancelada,
         filaAtiva,

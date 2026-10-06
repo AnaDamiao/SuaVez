@@ -14,6 +14,7 @@ export default function Cliente() {
   const {
     senha,
     senhaAtual,
+    nomeFila,
     posicao,
     cancelada,
     filaAtiva,
@@ -40,6 +41,7 @@ export default function Cliente() {
       <TelaAguardando
         senha={senha.numero}
         senhaAtual={senhaAtual}
+        nomeFila={nomeFila}
         posicao={posicao}
         tempoEstimado={tempoEstimado}
         confirmando={confirmando}
