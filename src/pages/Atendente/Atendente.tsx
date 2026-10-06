@@ -7,7 +7,7 @@ import {
   finalizarFila,
 } from "../../services/filaService";
 import { useAuth } from "../../firebase/AuthContext";
-import "./atendente.styles.scss";
+import "./Atendente.styles.scss";
 
 interface Fila {
   ativa?: boolean;
