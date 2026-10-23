@@ -138,7 +138,7 @@ export default function Atendente() {
             </div>
             <div className="atendente-guiche-tag">
               <span className="atendente-dot" />
-              Guichê 04 • Ativo
+              Fila única • Ativo
             </div>
           </div>
 

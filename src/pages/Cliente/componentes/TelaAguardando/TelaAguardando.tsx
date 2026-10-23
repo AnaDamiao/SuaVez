@@ -3,6 +3,7 @@ import type { ITelaAguardando } from "./TelaAguardando.types";
 
 export default function TelaAguardando({
   senha,
+  nomeFila,
   senhaAtual,
   posicao,
   confirmando,
@@ -13,6 +14,7 @@ export default function TelaAguardando({
   return (
     <div className="page">
       <div className="card">
+        <p className="comprovante-fila-nome">{nomeFila}</p>
         <p className="label">SUA SENHA</p>
         <div className="senha">{senha}</div>
 
@@ -60,8 +62,8 @@ export default function TelaAguardando({
               <small className="tempo">
                 {tempoEstimado.amostras === 1
                   ? "Estimativa inicial baseada no último intervalo entre chamadas."
-                  : "Baseado nos últimos intervalos entre chamadas."}
-                {" "}Pode variar conforme os atendimentos.
+                  : "Baseado nos últimos atendimentos."}
+                {" "}Podendo variar.
               </small>
               {tempoEstimado.atrasada && (
                 <small className="tempo">Sua espera ultrapassou a estimativa. O tempo será recalculado na próxima chamada.</small>
@@ -72,23 +74,29 @@ export default function TelaAguardando({
           )}
         </div>
 
-        {confirmando ? (
-          <div className="confirm">
-            <p>Tem certeza que deseja cancelar?</p>
-            <div className="actions">
-              <button className="btn-yes" onClick={onCancelar}>
-                Sim
-              </button>
-              <button className="btn-back" onClick={onVoltar}>
-                Voltar
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button className="btn-cancel" onClick={onCancelar}>
-            Cancelar senha
+        <div className="actions_btns">
+          <button className="btn-comprovante" onClick={() => window.print()}>
+            Salvar comprovante em PDF
           </button>
-        )}
+
+          {confirmando ? (
+            <div className="confirm">
+              <p>Tem certeza que deseja cancelar?</p>
+              <div className="actions">
+                <button className="btn-yes" onClick={onCancelar}>
+                  Sim
+                </button>
+                <button className="btn-back" onClick={onVoltar}>
+                  Voltar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className="btn-cancel" onClick={onCancelar}>
+              Cancelar senha
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
