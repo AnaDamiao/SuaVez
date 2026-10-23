@@ -1,6 +1,7 @@
 export interface Senha {
   numero: number;
   senhaDocId: string;
+  chamadaEm?: number;
 }
 
 export interface FilaDados {

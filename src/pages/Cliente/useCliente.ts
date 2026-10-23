@@ -57,6 +57,7 @@ export function useCliente(codigo: string | undefined) {
             && typeof (senhaRestaurada as Senha).senhaDocId === "string"
             ) {
             setSenha(senhaRestaurada as Senha);
+            setChamado(Boolean((senhaRestaurada as Senha).chamadaEm));
             }
         } catch {
             localStorage.removeItem(chaveSenha);
@@ -75,7 +76,21 @@ export function useCliente(codigo: string | undefined) {
             setFilaAtiva(dados.ativa);
             setSenhaAtual(dados.senhaAtual || 0);
 
+            if (senha && dados.senhaAtual === senha.numero) {
+                setChamado(true);
+                if (!senha.chamadaEm) {
+                    const senhaChamada = { ...senha, chamadaEm: dados.ultimaChamadaEm || Date.now() };
+                    setSenha(senhaChamada);
+                    if (chaveSenha) localStorage.setItem(chaveSenha, JSON.stringify(senhaChamada));
+                }
+                return;
+            }
+
             if (senha && dados.senhaAtual > senha.numero) {
+                if (senha.chamadaEm) {
+                    setChamado(true);
+                    return;
+                }
                 if (chaveSenha) localStorage.removeItem(chaveSenha);
                 setSenha(null);
                 setCancelada(false);
@@ -86,7 +101,7 @@ export function useCliente(codigo: string | undefined) {
                 return;
             }
 
-            setChamado(Boolean(senha && dados.senhaAtual === senha.numero));
+            setChamado(Boolean(senha?.chamadaEm));
         });
 
         return () => unsub();
@@ -116,6 +131,10 @@ export function useCliente(codigo: string | undefined) {
             const resultado = await gerarSenha(codigo);
             if (chaveSenha) localStorage.setItem(chaveSenha, JSON.stringify(resultado));
             setSenha(resultado);
+            setChamado(false);
+            setCancelada(false);
+            setConfirmando(false);
+            setPosicao(null);
         } finally {
             setLoading(false);
         }
